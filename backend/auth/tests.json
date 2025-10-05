@@ -1,0 +1,37 @@
+{
+  "tests": [
+    {
+      "name": "Register returns error for duplicate user",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "action": "register",
+        "username": "admin",
+        "email": "admin@metin2.ru",
+        "password": "testpass123",
+        "character_name": "TestHero",
+        "character_class": "Воин"
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Login with invalid credentials returns error",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "action": "login",
+        "username": "nonexistent",
+        "password": "wrong"
+      },
+      "expectedStatus": 401,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

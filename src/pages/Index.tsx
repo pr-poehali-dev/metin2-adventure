@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import RegisterModal from "@/components/RegisterModal";
 
 interface PlayerRating {
   player_name: string;
@@ -28,6 +29,8 @@ interface PlayerRating {
 const Index = () => {
   const [ratings, setRatings] = useState<PlayerRating[]>([]);
   const [loading, setLoading] = useState(true);
+  const [registerOpen, setRegisterOpen] = useState(false);
+  const [user, setUser] = useState<string | null>(null);
 
   useEffect(() => {
     fetch('https://functions.poehali.dev/c10649c4-fe9a-4f68-a1f0-d87a6728f97c')
@@ -41,6 +44,10 @@ const Index = () => {
         setLoading(false);
       });
   }, []);
+
+  const handleRegisterSuccess = (username: string) => {
+    setUser(username);
+  };
   const news = [
     {
       id: 1,
@@ -104,8 +111,11 @@ const Index = () => {
               <a href="#ratings" className="text-foreground hover:text-accent transition-colors">Рейтинги</a>
               <a href="#donate" className="text-foreground hover:text-accent transition-colors">Донат</a>
             </div>
-            <Button className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-primary-foreground font-semibold">
-              Регистрация
+            <Button 
+              onClick={() => setRegisterOpen(true)}
+              className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-primary-foreground font-semibold"
+            >
+              {user ? `Привет, ${user}` : 'Регистрация'}
             </Button>
           </div>
         </div>
@@ -293,6 +303,12 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      <RegisterModal 
+        open={registerOpen} 
+        onOpenChange={setRegisterOpen}
+        onSuccess={handleRegisterSuccess}
+      />
 
       <footer className="py-12 border-t border-border">
         <div className="container mx-auto px-4">
