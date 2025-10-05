@@ -1,0 +1,24 @@
+{
+  "tests": [
+    {
+      "name": "Get top 10 ratings",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "ratings": "array"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Get top 5 ratings with limit",
+      "method": "GET",
+      "path": "/?limit=5",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "ratings": "array"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

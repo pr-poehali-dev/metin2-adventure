@@ -2,8 +2,45 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Icon from "@/components/ui/icon";
 import { Badge } from "@/components/ui/badge";
+import { useEffect, useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+interface PlayerRating {
+  player_name: string;
+  level: number;
+  class: string;
+  guild: string | null;
+  total_score: number;
+  pvp_kills: number;
+  pve_bosses_killed: number;
+  quests_completed: number;
+  playtime_hours: number;
+  rank: number;
+}
 
 const Index = () => {
+  const [ratings, setRatings] = useState<PlayerRating[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('https://functions.poehali.dev/c10649c4-fe9a-4f68-a1f0-d87a6728f97c')
+      .then(res => res.json())
+      .then(data => {
+        setRatings(data.ratings);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error loading ratings:', err);
+        setLoading(false);
+      });
+  }, []);
   const news = [
     {
       id: 1,
@@ -163,6 +200,78 @@ const Index = () => {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="ratings" className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="font-cinzel text-4xl md:text-5xl font-bold text-primary-foreground mb-4">Топ игроков</h2>
+            <p className="text-muted-foreground text-lg">Лучшие воины нашего сервера</p>
+          </div>
+          
+          <div className="max-w-6xl mx-auto">
+            <Card className="border-border bg-card/50 backdrop-blur">
+              <CardContent className="p-0">
+                {loading ? (
+                  <div className="text-center py-12">
+                    <p className="text-muted-foreground">Загрузка рейтинга...</p>
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="border-border hover:bg-transparent">
+                        <TableHead className="text-center w-16 font-cinzel">Ранг</TableHead>
+                        <TableHead className="font-cinzel">Игрок</TableHead>
+                        <TableHead className="text-center font-cinzel">Уровень</TableHead>
+                        <TableHead className="font-cinzel">Класс</TableHead>
+                        <TableHead className="font-cinzel">Гильдия</TableHead>
+                        <TableHead className="text-center font-cinzel">Очки</TableHead>
+                        <TableHead className="text-center font-cinzel">Боссы</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {ratings.map((player, index) => (
+                        <TableRow 
+                          key={player.rank} 
+                          className="border-border hover:bg-accent/5 transition-colors animate-fade-in"
+                          style={{ animationDelay: `${index * 50}ms` }}
+                        >
+                          <TableCell className="text-center font-bold">
+                            {player.rank <= 3 ? (
+                              <Badge className={
+                                player.rank === 1 ? "bg-yellow-500 text-yellow-950" :
+                                player.rank === 2 ? "bg-gray-400 text-gray-950" :
+                                "bg-amber-600 text-amber-950"
+                              }>
+                                #{player.rank}
+                              </Badge>
+                            ) : (
+                              <span className="text-muted-foreground">#{player.rank}</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="font-semibold text-foreground">{player.player_name}</TableCell>
+                          <TableCell className="text-center">
+                            <Badge variant="outline" className="border-accent text-accent">
+                              {player.level}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">{player.class}</TableCell>
+                          <TableCell className="text-muted-foreground">{player.guild || '—'}</TableCell>
+                          <TableCell className="text-center font-semibold text-accent">
+                            {player.total_score.toLocaleString()}
+                          </TableCell>
+                          <TableCell className="text-center text-muted-foreground">
+                            {player.pve_bosses_killed}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
