@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import Icon from "@/components/ui/icon";
 import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -28,6 +29,7 @@ interface PlayerRating {
 }
 
 const Index = () => {
+  const navigate = useNavigate();
   const [ratings, setRatings] = useState<PlayerRating[]>([]);
   const [loading, setLoading] = useState(true);
   const [registerOpen, setRegisterOpen] = useState(false);
@@ -119,7 +121,14 @@ const Index = () => {
             </div>
             {user ? (
               <div className="flex items-center gap-3">
-                <span className="text-foreground">Привет, <span className="font-semibold text-accent">{user}</span>!</span>
+                <Button
+                  onClick={() => navigate(`/profile?username=${user}`)}
+                  variant="ghost"
+                  className="text-foreground hover:text-accent"
+                >
+                  <Icon name="User" className="mr-2" size={18} />
+                  {user}
+                </Button>
                 <Button 
                   onClick={() => setUser(null)}
                   variant="outline"

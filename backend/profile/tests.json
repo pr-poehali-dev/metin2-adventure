@@ -1,0 +1,26 @@
+{
+  "tests": [
+    {
+      "name": "Get user profile by username",
+      "method": "GET",
+      "path": "/?username=admin",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "profile": {
+          "username": "admin"
+        }
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Missing username returns error",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
