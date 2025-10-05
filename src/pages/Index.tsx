@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import RegisterModal from "@/components/RegisterModal";
+import LoginModal from "@/components/LoginModal";
 
 interface PlayerRating {
   player_name: string;
@@ -30,6 +31,7 @@ const Index = () => {
   const [ratings, setRatings] = useState<PlayerRating[]>([]);
   const [loading, setLoading] = useState(true);
   const [registerOpen, setRegisterOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
   const [user, setUser] = useState<string | null>(null);
 
   useEffect(() => {
@@ -46,6 +48,10 @@ const Index = () => {
   }, []);
 
   const handleRegisterSuccess = (username: string) => {
+    setUser(username);
+  };
+
+  const handleLoginSuccess = (username: string) => {
     setUser(username);
   };
   const news = [
@@ -111,12 +117,35 @@ const Index = () => {
               <a href="#ratings" className="text-foreground hover:text-accent transition-colors">Рейтинги</a>
               <a href="#donate" className="text-foreground hover:text-accent transition-colors">Донат</a>
             </div>
-            <Button 
-              onClick={() => setRegisterOpen(true)}
-              className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-primary-foreground font-semibold"
-            >
-              {user ? `Привет, ${user}` : 'Регистрация'}
-            </Button>
+            {user ? (
+              <div className="flex items-center gap-3">
+                <span className="text-foreground">Привет, <span className="font-semibold text-accent">{user}</span>!</span>
+                <Button 
+                  onClick={() => setUser(null)}
+                  variant="outline"
+                  size="sm"
+                  className="border-border"
+                >
+                  Выйти
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Button 
+                  onClick={() => setLoginOpen(true)}
+                  variant="outline"
+                  className="border-accent text-accent hover:bg-accent hover:text-accent-foreground"
+                >
+                  Вход
+                </Button>
+                <Button 
+                  onClick={() => setRegisterOpen(true)}
+                  className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-primary-foreground font-semibold"
+                >
+                  Регистрация
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </nav>
@@ -308,6 +337,12 @@ const Index = () => {
         open={registerOpen} 
         onOpenChange={setRegisterOpen}
         onSuccess={handleRegisterSuccess}
+      />
+      
+      <LoginModal 
+        open={loginOpen} 
+        onOpenChange={setLoginOpen}
+        onSuccess={handleLoginSuccess}
       />
 
       <footer className="py-12 border-t border-border">
